@@ -1,0 +1,25 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "connection.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mysql2": "^2.3.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eikohler/Sage-API-Connection.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eikohler/Sage-API-Connection/issues"
+  },
+  "homepage": "https://github.com/eikohler/Sage-API-Connection#readme"
+}
