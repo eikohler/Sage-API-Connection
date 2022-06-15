@@ -3,7 +3,8 @@ const router = express.Router();
 const db = require('../../db/connection');
 
 router.get('/vendors', (req, res) => {
-    const sql = `SELECT * FROM tVendor`;
+    const sql = `SELECT sName FROM simply.tVendor
+    order by sName ASC`;
   
     db.query(sql, (err, rows) => {
       if (err) {
