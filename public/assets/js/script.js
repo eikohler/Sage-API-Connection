@@ -405,46 +405,61 @@ const submitOrder = async () => {
     // Get vendor
     const vendor = await getVendor($('#vendors').val());
 
-    // Get shipping address
+    // Get shipping address fields
     let shipTo = [];
     $('.shipTo').find('input').each(function(){
         shipTo.push($(this).val());
-    });
+    });    
 
-    // Get order number
-    let orderNum = $('#orderNum').val();
-    // Get order date
-    let orderDate = $('#orderDate').val();
-    // Get shipping date
-    let shipDate = $('#shipDate').val();
-    // Get location id
-    let locationID = $('#locations').val();
-
+    // Get items per row
     let items = [];
-
     $('.itemsRow').each(async function(){
         if($(this).find('.itemSelect').val()){
-
+            // Get item by id
             const item = await getItem($(this).find('.itemSelect').val());
-            console.log(item);
 
-            // const item = {
-            //     orderQuantity: $(this).find('.orderNum').val(),
-            //     backOrderQuantity: $(this).find('.bOrderNum').val(),
-            //     taxCode: $(this).find('.quantityNum').val(),
-            //     gst: $(this).find('.quantityNum').val(),
-            //     pst: $(this).find('.quantityNum').val(),
-            //     amount: $(this).find('.quantityNum').val(),
-            // };
+            // Get total tax amount
+            let taxAmt = 0;
+            if($(this).find('.gstNum').val()) taxAmt = taxAmt + parseFloat($(this).find('.gstNum').val());
+            if($(this).find('.pstNum').val()) taxAmt = taxAmt + parseFloat($(this).find('.pstNum').val());
+            taxAmt = Math.round(taxAmt * 100)/100;
+
+            // Create user input object
+            const userInput = {
+                orderQuantity: $(this).find('.orderNum').val(),
+                backOrderQuantity: $(this).find('.bOrderNum').val(),
+                taxCode: $(this).find('.taxNum').val(),
+                taxAmt: taxAmt,
+                amount: $(this).find('.amountNum').val()
+            };
+
+            // Add user input to item object, push item object to items array
+            item.userInput = userInput;
+            items.push(item);
         }
     });
 
-    const data = { vendor: vendor, shipTo: shipTo, 
-        orderNum: orderNum, orderDate: orderDate, 
-        shipDate: shipDate, locationID: locationID  
+    // Get freight tax amount total
+    let freightTaxAmt = 0;
+    if($('#freightGST').val()) freightTaxAmt = freightTaxAmt + parseFloat($('#freightGST').val());
+    if($('#freightPST').val()) freightTaxAmt = freightTaxAmt + parseFloat($('#freightPST').val());
+    freightTaxAmt = Math.round(freightTaxAmt * 100)/100;
+
+    const data = { 
+        vendor: vendor, 
+        shipTo: shipTo, 
+        orderNum: $('#orderNum').val(), 
+        orderDate: $('#orderDate').val(), 
+        shipDate: $('#shipDate').val(), 
+        locationID: $('#locations').val(), 
+        items: items,
+        freightAmt: $('#freight').val(),
+        freightTaxCode: $('.freight-tax').val(),
+        freightTaxAmt: freightTaxAmt,
+        totalAmt: $('#total').val()
     };
 
-    // console.log(data);
+    console.log(data);
 }
 
 $(document).on("change", '.freight-tax, #freight', updateFreightTax);
