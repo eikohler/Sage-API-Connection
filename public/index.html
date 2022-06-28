@@ -9,13 +9,106 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
   integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="./assets/js/jquery-ui/jquery-ui.min.css">
   <link rel="stylesheet" href="./assets/css/style.css" />
 </head>
 
 <body>
-  <main></main>
+  <main class="container my-5">
+    <form id="purOrdrForm">
+      <section class="row">
+        <div class="col-md-4">
+          <label for="vendor"><strong>Vendor <span class="required">*</span></strong></label><br>
+          <select name="vendor" id="vendors" autocomplete="on" required>
+            <option value="" disabled="" selected="">Select</option>
+          </select>
+          <div class="vendorInfo"></div>
+        </div>
+        <div class="col-md-4">
+          <label><strong>Shipping Address</strong></label>          
+          <div class="shipTo">
+            <input name="shipTo1" value="Evolution Technologies Inc."></input>
+            <input name="shipTo2" value="2530 Davies Avenue"></input>
+            <input name="shipTo3" value="Port Coquitlam, B.C.  V3C 2J9"></input>
+            <input name="shipTo4" value="Canada"></input>
+            <input name="shipTo5" value=""></input>
+            <input name="shipTo6" value=""></input>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <section class="row order-info">
+            <div>
+              <p>
+                <label for="ordernum"><strong>Order No.: <span class="required">*</span></strong></label>          
+                <input name="ordernum" id="orderNum" required>        
+              </p>
+              <p>
+                <label for="date"><strong>Order Date: <span class="required">*</span></strong></label>          
+                <input name="date" id="orderDate" required>
+              </p>
+              <p>
+                <label for="shipDate"><strong>Shipping Date:</strong></label>          
+                <input name="shipDate" id="shipDate">
+              </p>
+            </div>
+            <div>
+              <p>
+                <label for="location"><strong>Items Stored At:</strong></label>          
+                <select name="location" id="locations" autocomplete="on"></select>
+              </p>       
+            </div>     
+          </section>
+        </div>
+      </section>
+      <section class="row">
+        <div class="col-12 my-5 items-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Item Number</th>
+                <th>Stock Qty.</th>
+                <th>Order</th>
+                <th>Back Order</th>
+                <th>Unit</th>
+                <th>Item Description</th>
+                <th>Price</th>
+                <th>Tax</th>
+                <th>GST</th>
+                <th>PST</th>
+                <th>Amount</th>
+                <th>Account</th>
+              </tr>
+            </thead>
+            <tbody id="itemsBody">
+              <tr class="itemsRow">
+                <td class="item"><select name="item" class="itemSelect" autocomplete="on">
+                  <option value="" disabled="" selected=""></option>
+                </select></td>
+                <td class="quantity"><input name="quantityNum" class="quantityNum readOnly" readonly title="Stock Quantity"></td>
+                <td class="order"><input name="orderNum" class="orderNum"></td>
+                <td class="bOrder"><input name="bOrderNum" class="bOrderNum"></td>
+                <td class="unit"><input name="unitNum" class="unitNum"></td>
+                <td class="description"><select name="desc" class="descSelect" autocomplete="on">
+                  <option value="" disabled="" selected=""></option>
+                </select></td>
+                <td class="price"><input name="priceNum" class="priceNum"></td>
+                <td class="tax"><select name="taxNum" class="taxNum" autocomplete="on"></select></td>
+                <td class="gst"><input name="gstNum" class="gstNum readOnly" readonly></td>
+                <td class="pst"><input name="pstNum" class="pstNum readOnly" readonly></td>
+                <td class="amount"><input name="amountNum" class="amountNum"></td>
+                <td class="account"><input name="accountNum" class="accountNum readOnly" readonly title="Account"></td>
+              </tr>          
+            </tbody>
+          </table>
+        </div>
+        </div>
+      </section>
+    </form>
+  </main>
 
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>  
+  <script src="./assets/js/jquery-ui/external/jquery/jquery.js"></script>
+  <script src="./assets/js/jquery-ui/jquery-ui.min.js"></script>
   <script src="./assets/js/script.js"></script>
 </body>
 

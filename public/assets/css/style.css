@@ -1,0 +1,93 @@
+/* Global Classes Start */
+label{
+    margin-bottom: 0px;
+}
+.required{
+    color: red;
+}
+textarea{
+    width: 100%;
+    height: 100%;
+}
+/* Global Classes End */
+
+/* Vendor form styling start */
+#vendors{
+    width: 100%;
+    margin-bottom: 10px;
+}
+.vendorInfo{
+    border: 1px solid #000;
+    padding: 10px;
+    height: 150px;
+    width: 100%;
+    overflow: auto;
+}
+.vendorInfo p{
+    margin-bottom: 0px;
+}
+/* Vendor form styling end */
+
+/* Shipping styling start */
+.shipTo{
+    border: 1px solid #000;
+    padding: 10px;
+    width: 100%;
+    height: 185px;
+    overflow: auto;
+}
+
+.shipTo input{
+    border: none;
+    outline: none;
+    width: 100%;
+}
+/* Shipping styling end */
+
+
+/* Items table styling start */
+table{
+    width: 100%;
+    border: 1px solid #000;
+    border-collapse: collapse;
+}
+th{
+    text-align: center;
+    border: 1px solid #000;
+}
+
+tr{
+    border: 1px solid #000;
+}
+
+tbody{
+    border: 1px solid #000;
+    border-collapse: separate;
+}
+
+td select, td input{
+    width: 100%;
+    border: none;
+    outline: none;
+}
+
+td{
+    border: 1px solid #000;
+}
+
+.readOnly{
+    background: #faebd7;
+}
+
+/* Items table styling end */
+
+/* Order info styling start */
+.order-info{
+    height: 100%;
+    justify-content: flex-end;
+    align-content: space-between;
+}
+.order-info div{
+    text-align: right;
+}
+/* Order info styling end */

@@ -99,3 +99,5 @@
 tTaxCode
 
 lAcNAsset = lAcctId
+
+tAccount has account descriptions by ID
