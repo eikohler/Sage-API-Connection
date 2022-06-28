@@ -91,3 +91,29 @@ td{
     text-align: right;
 }
 /* Order info styling end */
+
+/* Totals section styling start */
+.totals-container th{
+    text-align: right;
+    border: none;
+}
+.totals-container table, .totals-container tr, .totals-container td, .totals-container tbody{
+    border: none;
+}
+.totals-container input.editable, .totals-container select.editable{
+    border: 1px solid #000;
+    width: 60px;
+}
+.totals-container input{
+    width: 60px;
+}
+.totals-container .freight-tax{
+    height: 28px;
+    padding-bottom: 1px;
+}
+.totals-container td{
+    padding-left: 10px;
+    width: 270px;
+}
+
+/* Totals section styling end */

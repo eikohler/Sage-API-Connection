@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Simply Vendors</title>
+  <title>Simply Purchase Order Interface</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
   integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous"/>
@@ -82,26 +82,63 @@
             <tbody id="itemsBody">
               <tr class="itemsRow">
                 <td class="item"><select name="item" class="itemSelect" autocomplete="on">
-                  <option value="" disabled="" selected=""></option>
+                  <option value="" selected=""></option>
                 </select></td>
                 <td class="quantity"><input name="quantityNum" class="quantityNum readOnly" readonly title="Stock Quantity"></td>
-                <td class="order"><input name="orderNum" class="orderNum"></td>
-                <td class="bOrder"><input name="bOrderNum" class="bOrderNum"></td>
+                <td class="order"><input name="orderNum" type="number" min="0" class="orderNum"></td>
+                <td class="bOrder"><input name="bOrderNum" type="number" min="0" class="bOrderNum"></td>
                 <td class="unit"><input name="unitNum" class="unitNum"></td>
                 <td class="description"><select name="desc" class="descSelect" autocomplete="on">
-                  <option value="" disabled="" selected=""></option>
+                  <option value="" selected=""></option>
                 </select></td>
-                <td class="price"><input name="priceNum" class="priceNum"></td>
+                <td class="price"><input name="priceNum" type="number" step="0.00000000000001" min="0" class="priceNum"></td>
                 <td class="tax"><select name="taxNum" class="taxNum" autocomplete="on"></select></td>
-                <td class="gst"><input name="gstNum" class="gstNum readOnly" readonly></td>
-                <td class="pst"><input name="pstNum" class="pstNum readOnly" readonly></td>
-                <td class="amount"><input name="amountNum" class="amountNum"></td>
+                <td class="gst"><input name="gstNum" type="number" step="0.01" min="0" class="gstNum readOnly" readonly></td>
+                <td class="pst"><input name="pstNum" type="number" step="0.01" min="0" class="pstNum readOnly" readonly></td>
+                <td class="amount"><input name="amountNum" type="number" step="0.01" min="0" class="amountNum"></td>
                 <td class="account"><input name="accountNum" class="accountNum readOnly" readonly title="Account"></td>
               </tr>          
             </tbody>
           </table>
         </div>
         </div>
+      </section>
+      <section class="row totals-container">    
+        <div class="col-md-6">
+
+        </div>
+        <div class="col-md-6">
+          <table>
+            <tr>
+              <th>Subtotal:</th>
+              <td><input name="subtotal" type="number" step="0.01" min="0" id="subtotal" class="text-right" readonly></td>
+            </tr>
+            <tr>
+              <th>Freight:</th>
+              <td>
+                <input name="freight" type="number" step="0.01" min="0" id="freight" class="editable text-right">
+                <select name="freightTax" type="number" step="0.01" min="0" class="editable freight-tax"></select>
+                <input name="freightGST" type="number" step="0.01" min="0" id="freightGST" class="editable readOnly" readonly>
+                <input name="freightPST" type="number" step="0.01" min="0" id="freightPST" class="editable readOnly" readonly>
+              </td>
+            </tr>
+            <tr>
+              <th>GST:</th>
+              <td><input name="gst" type="number" step="0.01" min="0" id="gst" class="text-right" readonly></td>
+            </tr>
+            <tr>
+              <th>PST:</th>
+              <td><input name="pst" type="number" step="0.01" min="0" id="pst" class="text-right" readonly></td>
+            </tr>
+            <tr>
+              <th>Total:</th>
+              <td><input name="total" type="number" step="0.01" min="0" id="total" class="text-right" readonly></td>
+            </tr>
+          </table>
+        </div>
+      </section>
+      <section class="text-right">
+        <input type="submit" value="Submit">
       </section>
     </form>
   </main>

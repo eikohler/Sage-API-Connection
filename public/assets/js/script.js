@@ -33,7 +33,7 @@ const getItem = async (id) => {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
-        let responseData = await response.json();        
+        let responseData = await response.json();     
         responseData.data[0].dInStock = 0;
         return responseData.data[0];
     }
@@ -108,8 +108,13 @@ const loadTax = async (taxCodes, row) => {
     // console.log(taxCodes);
     let taxNum = row.find('.taxNum');
     taxCodes.data.forEach(taxCode => {
-        taxNum.append(`<option value="${taxCode.lId}">${taxCode.sCode} - ${taxCode.sDesc}</option>`);
+        taxNum.append(`<option value="${taxCode.lId}">${taxCode.sCode} - ${taxCode.sDesc}</option>`);        
     });
+    if ($('.freight-tax').has('option').length == 0){
+        taxCodes.data.forEach(taxCode => {
+            $('.freight-tax').append(`<option value="${taxCode.lId}">${taxCode.sCode} - ${taxCode.sDesc}</option>`);    
+        });
+    }
     if($('#vendors').val()){
         const vendor = await getVendor($('#vendors').val());
         taxNum.val(vendor.lTaxCode);
@@ -183,14 +188,15 @@ const selectItem = async (row, id) => {
     row.find('.quantityNum').val(item.dInStock);
     row.find('.quantityNum').prop('title', `${item.dInStock}`);
     row.find('.priceNum').val(item.dLastPPrce);
-    row.find('.accountNum').val(`${acctNum} ${item.sName}`);
-    row.find('.accountNum').prop('title', `${acctNum} ${item.sName}`);
+    row.find('.accountNum').val(`${acctNum} ${item.accountName}`);
+    row.find('.accountNum').prop('title', `${acctNum} ${item.accountName}`);
 
     let amount = row.find('.orderNum').val() * row.find('.priceNum').val();
     amount = Math.round(amount * 100)/100;
     row.find('.amountNum').val(amount);
 
     updateTax(row);
+    updateTotals();
 }
 
 const updateTax = (row) =>{
@@ -266,39 +272,200 @@ const updateTax = (row) =>{
     }
 }
 
+const updateFreightTax = () =>{
+    let taxCode = $('.freight-tax').val();
+    let gst = $('#freightGST');
+    let pst = $('#freightPST');
+    let amount = $('#freight').val();
+    switch(taxCode) {
+        case '1':
+            gst.prop('readonly', true);
+            gst.addClass('readOnly');
+            gst.val('');
+            pst.prop('readonly', true);
+            pst.addClass('readOnly');
+            pst.val('');
+            break;
+        case '21':
+            gst.prop('readonly', true);
+            gst.addClass('readOnly');
+            gst.val('');
+            pst.prop('readonly', true);
+            pst.addClass('readOnly');
+            pst.val('');
+            break;
+        case '23':
+            gst.prop('readonly', false);
+            gst.removeClass('readOnly');
+            gst.val(Math.round((amount*0.05) * 100)/100);
+            pst.prop('readonly', true);
+            pst.addClass('readOnly');
+            pst.val('');
+            break;
+        case '25':
+            gst.prop('readonly', false);
+            gst.removeClass('readOnly');
+            gst.val(Math.round((amount*0.13) * 100)/100);
+            pst.prop('readonly', true);
+            pst.addClass('readOnly');
+            pst.val('');
+            break;
+        case '26':
+            gst.prop('readonly', false);
+            gst.removeClass('readOnly');
+            gst.val(Math.round((amount*0.12) * 100)/100);
+            pst.prop('readonly', true);
+            pst.addClass('readOnly');
+            pst.val('');
+            break;
+        case '28':
+            gst.prop('readonly', false);
+            gst.removeClass('readOnly');
+            gst.val(Math.round((amount*0.15) * 100)/100);
+            pst.prop('readonly', true);
+            pst.addClass('readOnly');
+            pst.val('');
+            break;
+        case '29':
+            gst.prop('readonly', false);
+            gst.removeClass('readOnly');
+            gst.val(Math.round((amount*0.05) * 100)/100);
+            pst.prop('readonly', false);
+            pst.removeClass('readOnly');
+            pst.val(Math.round((amount*0.07) * 100)/100);
+            break;
+        case '30':
+            gst.prop('readonly', false);
+            gst.removeClass('readOnly');
+            gst.val(Math.round((amount*0.14) * 100)/100);
+            pst.prop('readonly', true);
+            pst.addClass('readOnly');
+            pst.val('');
+            break;            
+    }
+    updateTotals();
+}
+
 const addRow = () => {
     $('#itemsBody').append(`<tr class="itemsRow">
         <td class="item"><select name="item" class="itemSelect" autocomplete="on">
-            <option value="" disabled="" selected=""></option>
+        <option value="" selected=""></option>
         </select></td>
         <td class="quantity"><input name="quantityNum" class="quantityNum readOnly" readonly title="Stock Quantity"></td>
-        <td class="order"><input name="orderNum" class="orderNum"></td>
-        <td class="bOrder"><input name="bOrderNum" class="bOrderNum"></td>
+        <td class="order"><input name="orderNum" type="number" min="0" class="orderNum"></td>
+        <td class="bOrder"><input name="bOrderNum" type="number" min="0" class="bOrderNum"></td>
         <td class="unit"><input name="unitNum" class="unitNum"></td>
         <td class="description"><select name="desc" class="descSelect" autocomplete="on">
-            <option value="" disabled="" selected=""></option>
+        <option value="" selected=""></option>
         </select></td>
-        <td class="price"><input name="priceNum" class="priceNum"></td>
+        <td class="price"><input name="priceNum" type="number" step="0.00000000000001" min="0" class="priceNum"></td>
         <td class="tax"><select name="taxNum" class="taxNum" autocomplete="on"></select></td>
-        <td class="gst"><input name="gstNum" class="gstNum readOnly" readonly></td>
-        <td class="pst"><input name="pstNum" class="pstNum readOnly" readonly></td>
-        <td class="amount"><input name="amountNum" class="amountNum"></td>
+        <td class="gst"><input name="gstNum" type="number" step="0.01" min="0" class="gstNum readOnly" readonly></td>
+        <td class="pst"><input name="pstNum" type="number" step="0.01" min="0" class="pstNum readOnly" readonly></td>
+        <td class="amount"><input name="amountNum" type="number" step="0.01" min="0" class="amountNum"></td>
         <td class="account"><input name="accountNum" class="accountNum readOnly" readonly title="Account"></td>
     </tr>`);
     initItems($('.itemsRow').last());
     initTax($('.itemsRow').last());
 };
 
+const updateTotals = () => {
+    let subtotalAmt = 0;
+    let freightAmt = 0;
+    if($('#freight').val()) freightAmt = parseFloat($('#freight').val());
+    let gstAmt = 0;
+    let pstAmt = 0;
+    let totalAmt = 0;
+    $('.amountNum').each(function(){
+        if($(this).val()) subtotalAmt = subtotalAmt + parseFloat($(this).val());
+    });
+    subtotalAmt = Math.round(subtotalAmt * 100)/100;
+    $('#subtotal').val(subtotalAmt);
+
+    $('.gstNum').each(function(){
+        if($(this).val()) gstAmt = gstAmt + parseFloat($(this).val());
+    });
+    if($('#freightGST').val()) gstAmt = gstAmt + parseFloat($('#freightGST').val());
+    gstAmt = Math.round(gstAmt * 100)/100;
+    $('#gst').val(gstAmt);
+
+    $('.pstNum').each(function(){
+        if($(this).val()) pstAmt = pstAmt + parseFloat($(this).val());
+    });
+    if($('#freightPST').val()) pstAmt = pstAmt + parseFloat($('#freightPST').val());
+    pstAmt = Math.round(pstAmt * 100)/100;
+    $('#pst').val(pstAmt);
+
+    totalAmt = subtotalAmt + freightAmt + gstAmt + pstAmt;
+    totalAmt = Math.round(totalAmt * 100)/100;
+    $('#total').val(totalAmt);
+}
+
+const submitOrder = async () => {
+    // Get vendor
+    const vendor = await getVendor($('#vendors').val());
+
+    // Get shipping address
+    let shipTo = [];
+    $('.shipTo').find('input').each(function(){
+        shipTo.push($(this).val());
+    });
+
+    // Get order number
+    let orderNum = $('#orderNum').val();
+    // Get order date
+    let orderDate = $('#orderDate').val();
+    // Get shipping date
+    let shipDate = $('#shipDate').val();
+    // Get location id
+    let locationID = $('#locations').val();
+
+    let items = [];
+
+    $('.itemsRow').each(async function(){
+        if($(this).find('.itemSelect').val()){
+
+            const item = await getItem($(this).find('.itemSelect').val());
+            console.log(item);
+
+            // const item = {
+            //     orderQuantity: $(this).find('.orderNum').val(),
+            //     backOrderQuantity: $(this).find('.bOrderNum').val(),
+            //     taxCode: $(this).find('.quantityNum').val(),
+            //     gst: $(this).find('.quantityNum').val(),
+            //     pst: $(this).find('.quantityNum').val(),
+            //     amount: $(this).find('.quantityNum').val(),
+            // };
+        }
+    });
+
+    const data = { vendor: vendor, shipTo: shipTo, 
+        orderNum: orderNum, orderDate: orderDate, 
+        shipDate: shipDate, locationID: locationID  
+    };
+
+    // console.log(data);
+}
+
+$(document).on("change", '.freight-tax, #freight', updateFreightTax);
+
 $('#vendors').change(function(){
     selectVendor($(this).val());
 });
 
 $(document).on("change", '.itemSelect, .descSelect', function(){
-    let row = $(this).parent().parent();
-    if(!row.find('.unitNum').val()){
-        addRow();
+    if($(this).val()){
+        let row = $(this).parent().parent();
+        if(!row.find('.unitNum').val()){
+            addRow();
+        }
+        selectItem($(this).parent().parent(), $(this).val());
+    }else{
+        if($(this).hasClass('itemSelect')){
+            $(this).parent().parent().remove();
+            updateTotals();
+        }
     }
-    selectItem($(this).parent().parent(), $(this).val());
 });
 
 $('#locations').change(function(){
@@ -316,6 +483,7 @@ $(document).on("focusout", '.orderNum', function(){
     row.find('.amountNum').val(amount);
     row.find('.bOrderNum').val($(this).val());
     updateTax(row);
+    updateTotals();
 });
 
 $(document).on("focusout", '.bOrderNum', function(){
@@ -325,11 +493,17 @@ $(document).on("focusout", '.bOrderNum', function(){
         alert("Quantity backordered cannot exceed quantity ordered");
         $(this).val(orderNum);
     }
-    updateTax(row);
 });
 
-$('.taxNum').change(function(){
+
+$(document).on("change", '.taxNum', function(){
     updateTax($(this).parent().parent());
+    updateTotals();
+});
+
+$(document).on("submit", '#purOrdrForm', function(event){
+    event.preventDefault();
+    submitOrder();
 });
 
 const initVendors = () => getVendors().then(loadVendors);

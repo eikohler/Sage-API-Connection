@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  const sql = `SELECT simply.tInvent.lId, sPartCode, simply.tInvent.sName, sBuyUnit, lAcNAsset, simply.tInvByLn.dLastPPrce, simply.tAccount.sName
+  const sql = `SELECT simply.tInvent.lId, sPartCode, simply.tInvent.sName AS description, sBuyUnit, lAcNAsset, simply.tInvByLn.dLastPPrce, simply.tAccount.sName AS accountName
   FROM simply.tInvent
   LEFT JOIN simply.tInvByLn ON simply.tInvent.lId=simply.tInvByLn.lInventId
   LEFT JOIN simply.tAccount ON lAcNAsset=simply.tAccount.lId
@@ -39,7 +39,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/item-by-location', (req, res) => {
-    const sql = `SELECT simply.tInvent.lId, sPartCode, simply.tInvent.sName, sBuyUnit, lAcNAsset, simply.tInvByLn.lInvLocId, simply.tInvByLn.dInStock, simply.tInvByLn.dLastPPrce, simply.tAccount.sName
+    const sql = `SELECT simply.tInvent.lId, sPartCode, simply.tInvent.sName AS description, sBuyUnit, lAcNAsset, simply.tInvByLn.lInvLocId, simply.tInvByLn.dInStock, simply.tInvByLn.dLastPPrce, simply.tAccount.sName AS accountName
     FROM simply.tInvent
     LEFT JOIN simply.tInvByLn ON simply.tInvent.lId=simply.tInvByLn.lInventId
     LEFT JOIN simply.tAccount ON lAcNAsset=simply.tAccount.lId
