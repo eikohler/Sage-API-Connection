@@ -1,11 +1,16 @@
 $( document ).ready(function() {
-    $('#orderDate').datepicker();
-    $('#orderDate').datepicker('setDate', 'today q');
-    $('#shipDate').datepicker();
+    $('#orderDate').datetimepicker({
+        dateFormat: 'yy-mm-dd',
+        timeFormat: 'HH:mm:ss',
+     });
+    $('#orderDate').datetimepicker('setDate', 'today');
+    $('#shipDate').datetimepicker({
+        dateFormat: 'yy-mm-dd',
+        timeFormat: 'HH:mm:ss',
+     });
     getUUID().then((data)=>{
-        $('#orderNum').val(data.uuid);
-    })
-    
+        $('#orderNum').val(data.uuid.substring(0, 20));
+    });
 });
 
 const getItems = async () => {
@@ -67,6 +72,17 @@ const getUUID = async () => {
         }      
     });
     return await response.json();
+}
+
+const getLastPOrderID = async () => {
+    let response =  await fetch("/api/purOrder/lastID", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }      
+    });
+    let idDate = await response.json();
+    return idDate.data[0].lId;
 }
 
 const getVendors = async () => {
@@ -445,7 +461,11 @@ const submitOrder = async () => {
     if($('#freightPST').val()) freightTaxAmt = freightTaxAmt + parseFloat($('#freightPST').val());
     freightTaxAmt = Math.round(freightTaxAmt * 100)/100;
 
+    let lastID = await getLastPOrderID();
+    let newID = lastID + 1;
+
     const data = { 
+        newID: newID,
         vendor: vendor, 
         shipTo: shipTo, 
         orderNum: $('#orderNum').val(), 
@@ -458,8 +478,21 @@ const submitOrder = async () => {
         freightTaxAmt: freightTaxAmt,
         totalAmt: $('#total').val()
     };
-
     console.log(data);
+
+    const response = await fetch('/api/purOrder/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    });
+
+    if(response.ok){
+        console.log("Successful POST");
+    }else{
+        console.log(response.statusText);
+    }
 }
 
 $(document).on("change", '.freight-tax, #freight', updateFreightTax);
