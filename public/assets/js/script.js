@@ -146,7 +146,8 @@ const loadItems = (items, row) => {
 }
 
 const selectVendor = async (id) => {
-    const selectedVendor = await getVendor(id);
+    const selectedVendor = await getVendor(id);    
+    console.log("Vendor");
     console.log(selectedVendor);
 
     let info = "";
@@ -193,6 +194,7 @@ const selectItem = async (row, id) => {
     // console.log(id);
 
     const item = await getItem(id);
+    console.log("Item");
     console.log(item);
 
     let acctNum = item.lAcNAsset.toString();
@@ -478,6 +480,7 @@ const submitOrder = async () => {
         freightTaxAmt: freightTaxAmt,
         totalAmt: $('#total').val()
     };
+    console.log("Order Data");
     console.log(data);
 
     const response = await fetch('/api/purOrder/', {
