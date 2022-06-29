@@ -431,6 +431,7 @@ const submitOrder = async () => {
 
     // Get items per row
     let items = [];
+    let lineNum = 1;
     $('.itemsRow').each(async function(){
         if($(this).find('.itemSelect').val()){
             // Get item by id
@@ -453,7 +454,9 @@ const submitOrder = async () => {
 
             // Add user input to item object, push item object to items array
             item.userInput = userInput;
+            item.lineNum = lineNum;
             items.push(item);
+            lineNum = lineNum + 1;
         }
     });
 
