@@ -90,22 +90,35 @@ td{
 .order-info div{
     text-align: right;
 }
+/* Mobile styling starts*/
+@media only screen and (max-width: 767px) {
+    .order-info{
+        margin-top: 1em;
+        justify-content: initial;
+        padding: 0px 15px;
+    }
+    .order-info div{
+        text-align: left;
+    }
+  }
+/* Mobile styling ends*/
 /* Order info styling end */
 
 /* Totals section styling start */
 .totals-container th{
     text-align: right;
     border: none;
+    width: 70px;
 }
 .totals-container table, .totals-container tr, .totals-container td, .totals-container tbody{
     border: none;
 }
 .totals-container input.editable, .totals-container select.editable{
     border: 1px solid #000;
-    width: 60px;
+    width: 100px;
 }
 .totals-container input{
-    width: 60px;
+    width: 100px;
 }
 .totals-container .freight-tax{
     height: 28px;
@@ -117,3 +130,14 @@ td{
 }
 
 /* Totals section styling end */
+
+
+/* Items table styling start*/
+.items-container{
+    overflow-x: auto;
+}
+.items-container table{
+    width: 1110px;
+}
+/* Items table styling end*/
+

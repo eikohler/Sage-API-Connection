@@ -1,4 +1,8 @@
 $( document ).ready(function() {
+    setOrderFields();
+});
+
+const setOrderFields = () =>{
     $('#orderDate').datetimepicker({
         dateFormat: 'yy-mm-dd',
         timeFormat: 'HH:mm:ss',
@@ -7,11 +11,12 @@ $( document ).ready(function() {
     $('#shipDate').datetimepicker({
         dateFormat: 'yy-mm-dd',
         timeFormat: 'HH:mm:ss',
-     });
+    });
+    $('#shipDate').val('');
     getUUID().then((data)=>{
         $('#orderNum').val(data.uuid.substring(0, 20));
     });
-});
+}
 
 const getItems = async () => {
     let response =  await fetch("/api/inventory/", {
@@ -188,6 +193,8 @@ const selectVendor = async (id) => {
         $(this).val(selectedVendor.lTaxCode);
         updateTax($(this).parent().parent());
     });
+    $('.freight-tax').val(selectedVendor.lTaxCode);
+    updateFreightTax();
 }
 
 const selectItem = async (row, id) => {
@@ -431,7 +438,6 @@ const submitOrder = async () => {
 
     // Get items per row
     let items = [];
-    let lineNum = 1;
     $('.itemsRow').each(async function(){
         if($(this).find('.itemSelect').val()){
             // Get item by id
@@ -449,14 +455,15 @@ const submitOrder = async () => {
                 backOrderQuantity: $(this).find('.bOrderNum').val(),
                 taxCode: $(this).find('.taxNum').val(),
                 taxAmt: taxAmt,
+                gst: $(this).find('.gstNum').val(),
+                pst: $(this).find('.pstNum').val(),
                 amount: $(this).find('.amountNum').val()
             };
 
             // Add user input to item object, push item object to items array
             item.userInput = userInput;
-            item.lineNum = lineNum;
+            item.lineNum = items.length + 1;
             items.push(item);
-            lineNum = lineNum + 1;
         }
     });
 
@@ -473,7 +480,7 @@ const submitOrder = async () => {
         newID: newID,
         vendor: vendor, 
         shipTo: shipTo, 
-        orderNum: $('#orderNum').val(), 
+        orderNum: $('#orderNum').val().replace(/\s+/g, ''), 
         orderDate: $('#orderDate').val(), 
         shipDate: $('#shipDate').val(), 
         locationID: $('#locations').val(), 
@@ -481,6 +488,8 @@ const submitOrder = async () => {
         freightAmt: $('#freight').val(),
         freightTaxCode: $('.freight-tax').val(),
         freightTaxAmt: freightTaxAmt,
+        freightGST: $('#freightGST').val(),
+        freightPST: $('#freightPST').val(),
         totalAmt: $('#total').val()
     };
     console.log("Order Data");
@@ -493,12 +502,26 @@ const submitOrder = async () => {
         },
         body: JSON.stringify(data)
     });
-
-    if(response.ok){
-        console.log("Successful POST");
+    const responseData = await response.json();
+    console.log(responseData);
+    if(responseData.message === "success"){
+        alert(`Success: Order has been submitted.\nOrder number: ${$('#orderNum').val().replace(/\s+/g, '')}`);
+        resetForm();
     }else{
-        console.log(response.statusText);
+        alert("Error: Order Unable to be Processed");
     }
+}
+
+const resetForm = () =>{
+    setOrderFields();
+    $('.itemsRow').each(function(){
+        $(this).remove();
+    });
+    addRow();
+    $('#vendors, #locations').prop('selectedIndex',0);
+    $('.vendorInfo').html('');
+    $('.totals-container').find('input').val('');
+    $('.totals-container').find('select').prop('selectedIndex',0);
 }
 
 $(document).on("change", '.freight-tax, #freight', updateFreightTax);
