@@ -139,5 +139,8 @@ td{
 .items-container table{
     width: 1110px;
 }
+.items-container .out-of-stock, .items-container .out-of-stock select, .items-container .out-of-stock input{
+    background-color: red;
+}
 /* Items table styling end*/
 

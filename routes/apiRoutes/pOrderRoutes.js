@@ -60,7 +60,7 @@ router.post('/', (req, res) => {
     if(req.body.freightGST){
         const gst = `
         INSERT INTO simply.tPOLineT (lPORecId, nLineNum, lTaxAuth, bExempt, bTaxAmtDef, dTaxAmt)
-        VALUES('${req.body.newID}', '${req.body.items.length + 1}', '1', '0', '1', '0.11${req.body.freightGST}');
+        VALUES('${req.body.newID}', '${req.body.items.length + 1}', '1', '0', '1', '${req.body.freightGST}');
         `;
         queries.push(gst);
     }
@@ -71,6 +71,15 @@ router.post('/', (req, res) => {
         `;
         queries.push(pst);
     }
+    const totalGst = `
+    INSERT INTO simply.tPOToT(lPOId, lTaxAuth, dTaxAmt, dNonRef)
+    VALUES('${req.body.newID}', '1', '${req.body.gstTotalRef}', '${req.body.gstTotalNonRef}');
+    `;
+    const totalPst = `
+    INSERT INTO simply.tPOToT(lPOId, lTaxAuth, dTaxAmt, dNonRef)
+    VALUES('${req.body.newID}', '2', '${req.body.pstTotalRef}', '${req.body.pstTotalNonRef}');
+    `;
+    queries.push(totalGst, totalPst);
 
     let index = 0;    
     const dbPromise = (query) => db.promise().query(query).then(()=>{
