@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 const apiRoutes = require('./apiRoutes');
-const htmlRoutes = require('./htmlRoutes');
+const pageRoutes = require('./pageRoutes');
 
 router.use('/api', apiRoutes);
-router.use('/', htmlRoutes);
+router.use('/', pageRoutes);
 
 module.exports = router;
