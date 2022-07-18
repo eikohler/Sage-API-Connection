@@ -11,6 +11,28 @@ textarea{
 }
 /* Global Classes End */
 
+/* Header Styling Start */
+header{
+    width: 100%;
+    background-color: #faebd7;
+    padding: 1em 0px;
+}
+
+header div{
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+
+header div a{
+    color: #000;
+    text-decoration: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 0px 1em;
+}
+/* Header Styling End */
+
 /* Vendor form styling start */
 #vendors{
     width: 100%;

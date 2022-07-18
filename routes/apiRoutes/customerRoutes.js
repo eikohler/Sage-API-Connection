@@ -19,8 +19,11 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  const sql = `SELECT simply.tCustomr.lId, simply.tCustomr.sName, sStreet1, sStreet2, sCity, sProvState, sCountry, sPostalZip, sCntcName, lTaxCode, lAcDefRev, lInvLocId, simply.tAccount.sName AS accountName FROM simply.tCustomr
+  const sql = `SELECT simply.tCustomr.lId, simply.tCustomr.sName, lSalManID, sStreet1, sStreet2, sCity, sProvState, sCountry, sPostalZip, sCntcName, lTaxCode, lAcDefRev, lInvLocId, simply.tAccount.sName AS accountName,
+  simply.tCustShp.sAddrName, simply.tCustShp.sShipCntc, simply.tCustShp.sShipStrt1, simply.tCustShp.sShipCity, simply.tCustShp.sShipPrvSt, simply.tCustShp.sShipPstZp, simply.tCustShp.sShipCnty
+  FROM simply.tCustomr
   LEFT JOIN simply.tAccount ON lAcDefRev=simply.tAccount.lId
+  LEFT JOIN simply.tCustShp ON simply.tCustShp.lCustId=simply.tCustomr.lId
   WHERE simply.tCustomr.lId = ${req.params.id}`;
 
   db.query(sql, (err, rows) => {

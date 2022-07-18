@@ -1,6 +1,10 @@
 const router = require('express').Router();
 
 router.get('/', (req, res) => {
+  res.render('sales-order');
+});
+
+router.get('/sales-invoice', (req, res) => {
   res.render('sales-invoice');
 });
 
