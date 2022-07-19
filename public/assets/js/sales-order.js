@@ -484,6 +484,13 @@ const submitOrder = async () => {
                 pstTotalNonRef = pstTotalNonRef + pstNum;
             }
 
+            let defaultPrice = 0;
+            let userPrice = $(this).find('.priceNum').val();
+
+            if(item.dLastPPrce == userPrice){
+                defaultPrice = 1;
+            }
+
             // Create user input object
             const userInput = {
                 orderQuantity: $(this).find('.orderNum').val(),
@@ -492,7 +499,9 @@ const submitOrder = async () => {
                 taxAmt: taxAmt,
                 gst: gstNum,
                 pst: pstNum,
-                amount: $(this).find('.amountNum').val()
+                amount: $(this).find('.amountNum').val(),
+                price: userPrice,
+                bDefPrice: defaultPrice
             };
 
             // Add user input to item object, push item object to items array
@@ -534,7 +543,7 @@ const submitOrder = async () => {
         shipDate: $('#shipDate').val(), 
         locationID: $('#locations').val(), 
         salesManID: $('#salesPerson').val(),
-        salesManName: $('#salesPerson').text(),
+        salesManName: $("#salesPerson option:selected").text(),
         items: items,
         freightAmt: $('#freight').val(),
         freightTaxCode: $('.freight-tax').val(),
@@ -545,7 +554,8 @@ const submitOrder = async () => {
         gstTotalRef: Math.round(gstTotalRef * 100)/100,
         gstTotalNonRef: Math.round(gstTotalNonRef * 100)/100,
         pstTotalRef: Math.round(pstTotalRef * 100)/100,
-        pstTotalNonRef: Math.round(pstTotalNonRef * 100)/100
+        pstTotalNonRef: Math.round(pstTotalNonRef * 100)/100,
+        message: $('#message').val()
     };
     console.log("Order Data");
     console.log(data);
@@ -572,7 +582,11 @@ const resetForm = () =>{
     $('.itemsRow').each(function(){
         $(this).remove();
     });
+    $('.shipTo').find('input').each(function(){
+        $(this).val(' ');
+    });
     addRow();
+    $('.accountNum').val(' ');
     $('#vendors, #locations, #salesPerson').prop('selectedIndex',0);
     $('.vendorInfo').html('');
     $('.totals-container').find('input').val('');
@@ -625,6 +639,14 @@ $('#locations').change(function(){
             selectItem($(this).parent().parent(), $(this).val());
         }
     });
+});
+
+$(document).on("focusout", '.priceNum', function(){
+    let row = $(this).parent().parent();
+    let amount = $(this).val() * row.find('.orderNum').val();
+    amount = Math.round(amount * 100)/100;
+    row.find('.amountNum').val(amount);
+    updateTax(row.find('.taxNum'));
 });
 
 $(document).on("focusout", '.orderNum', function(){
