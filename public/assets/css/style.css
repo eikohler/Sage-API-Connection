@@ -33,22 +33,22 @@ header div a{
 }
 /* Header Styling End */
 
-/* Vendor form styling start */
-#vendors{
+/* Subject form styling start */
+#subjects{
     width: 100%;
     margin-bottom: 10px;
 }
-.vendorInfo{
+.subjectInfo{
     border: 1px solid #000;
     padding: 10px;
     height: 150px;
     width: 100%;
     overflow: auto;
 }
-.vendorInfo p{
+.subjectInfo p{
     margin-bottom: 0px;
 }
-/* Vendor form styling end */
+/* Subject form styling end */
 
 /* Shipping styling start */
 .shipTo{

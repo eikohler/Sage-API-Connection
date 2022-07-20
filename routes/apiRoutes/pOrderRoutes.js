@@ -1,14 +1,6 @@
-const uuid = require('uuid');
 const express = require('express');
 const router = express.Router();
 const db = require('../../db/connection');
-
-router.get('/uuid', (req, res) => {
-    let id = uuid.v1();
-    res.json({
-        uuid: id
-    });
-});
 
 router.get('/lastID', (req, res) => {
     const sql = `SELECT lId FROM simply.tPurOrdr ORDER BY lId DESC LIMIT 0, 1;`;

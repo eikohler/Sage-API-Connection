@@ -1,5 +1,5 @@
-const getLastSOrderID = async () => {
-    let response =  await fetch("/api/salesOrder/lastID", {
+const getLastPOrderID = async () => {
+    let response =  await fetch("/api/purOrder/lastID", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -10,8 +10,8 @@ const getLastSOrderID = async () => {
 }
 
 const submitOrder = async () => {
-    // Get customer
-    const customer = await getCustomer($('#subjects').val());
+    // Get vendor
+    const vendor = await getVendor($('#subjects').val());
 
     // Get shipping address fields
     let shipTo = [];
@@ -50,13 +50,6 @@ const submitOrder = async () => {
                 pstTotalNonRef = pstTotalNonRef + pstNum;
             }
 
-            let defaultPrice = 0;
-            let userPrice = $(this).find('.priceNum').val();
-
-            if(item.dLastPPrce == userPrice){
-                defaultPrice = 1;
-            }
-
             // Create user input object
             const userInput = {
                 orderQuantity: $(this).find('.orderNum').val(),
@@ -65,9 +58,7 @@ const submitOrder = async () => {
                 taxAmt: taxAmt,
                 gst: gstNum,
                 pst: pstNum,
-                amount: $(this).find('.amountNum').val(),
-                price: userPrice,
-                bDefPrice: defaultPrice
+                amount: $(this).find('.amountNum').val()
             };
 
             // Add user input to item object, push item object to items array
@@ -97,19 +88,17 @@ const submitOrder = async () => {
     if($('#freightPST').val()) freightTaxAmt = freightTaxAmt + freightPstNum;
     freightTaxAmt = Math.round(freightTaxAmt * 100)/100;
 
-    let lastID = await getLastSOrderID();
+    let lastID = await getLastPOrderID();
     let newID = lastID + 1;
 
     const data = { 
         newID: newID,
-        customer: customer, 
+        vendor: vendor, 
         shipTo: shipTo, 
         orderNum: $('#orderNum').val().replace(/\s+/g, ''), 
         orderDate: $('#orderDate').val(), 
         shipDate: $('#shipDate').val(), 
         locationID: $('#locations').val(), 
-        salesManID: $('#salesPerson').val(),
-        salesManName: $("#salesPerson option:selected").text(),
         items: items,
         freightAmt: $('#freight').val(),
         freightTaxCode: $('.freight-tax').val(),
@@ -120,13 +109,12 @@ const submitOrder = async () => {
         gstTotalRef: Math.round(gstTotalRef * 100)/100,
         gstTotalNonRef: Math.round(gstTotalNonRef * 100)/100,
         pstTotalRef: Math.round(pstTotalRef * 100)/100,
-        pstTotalNonRef: Math.round(pstTotalNonRef * 100)/100,
-        message: $('#message').val()
+        pstTotalNonRef: Math.round(pstTotalNonRef * 100)/100
     };
     console.log("Order Data");
     console.log(data);
 
-    const response = await fetch('/api/salesOrder/', {
+    const response = await fetch('/api/purOrder/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
