@@ -9,6 +9,23 @@ const getLastSOrderID = async () => {
     return idDate.data[0].lId;
 }
 
+const getSaleOrders = async () => {
+    let response = await fetch("/api/salesOrder/", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    return await response.json();
+}
+
+const loadSaleOrders = (orders) => {
+    console.log(orders);
+    orders.data.forEach(order => {
+        $('#orderSelect').append(`<option value="${order.lId}">${order.sSONum}</option>`);
+    });
+}
+
 const submitOrder = async () => {
     // Get customer
     const customer = await getCustomer($('#subjects').val());
@@ -142,3 +159,7 @@ const submitOrder = async () => {
         alert("Error: Order Unable to be Processed");
     }
 }
+
+const initSaleOrders = () => getSaleOrders().then(loadSaleOrders);
+
+initSaleOrders();

@@ -35,13 +35,21 @@
         <section class="row order-info">
             <div>
                 <p>
-                    <label for="ordernum"><strong>Order No.: <span class="required">*</span></strong></label>          
-                    <input name="ordernum" id="orderNum" required>        
+                    <label for="ordernum"><strong>{{#if invoice}}Invoice{{else}}Order{{/if}} No.: <span class="required">*</span></strong></label>          
+                    <input name="ordernum" id="orderNum" maxlength="20" required>        
                 </p>
                 <p>
-                    <label for="date"><strong>Order Date: <span class="required">*</span></strong></label>          
+                    <label for="date"><strong>{{#unless invoice}}Order{{/unless}} Date: <span class="required">*</span></strong></label>          
                     <input name="date" id="orderDate" required>
                 </p>
+                {{#if invoice}}
+                    <p>
+                        <label for="orderSelect"><strong>Order No.:</strong></label>          
+                        <select name="orderSelect" id="orderSelect" autocomplete="on">
+                            <option value="" disabled="" selected=""></option>
+                        </select>
+                    </p>
+                {{/if}} 
                 <p>
                     <label for="shipDate"><strong>Shipping Date:</strong></label>          
                     <input name="shipDate" id="shipDate">
@@ -112,7 +120,7 @@
         {{#if sales}}
             <p>
                 <label for="message"><strong>Message</strong></label>          
-                <textarea name="message" id="message"></textarea>        
+                <textarea name="message" id="message" maxlength="100"></textarea>        
             </p>
         {{else}}
             <p>Note: Items highlighted in red are out of stock at the selected location 

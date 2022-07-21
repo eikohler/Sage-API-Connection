@@ -16,6 +16,57 @@ router.get('/lastID', (req, res) => {
     });
 });
 
+router.get('/', (req, res) => {
+    const sql = `SELECT lId, sSONum FROM simply.tSalOrdr
+    WHERE bCleared = 0
+    ORDER BY IF(sSONum RLIKE '[a-z / . -]', 1, 2) DESC, 
+    CASE WHEN sSONum RLIKE '[a-z / . -]' THEN sSONum END, 
+    CHAR_LENGTH(sSONum), sSONum ASC;`;
+    db.query(sql, (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: 'success',
+        data: rows,
+      });
+    });
+});
+
+router.get('/:id', (req, res) => {
+    const sql = `SELECT * FROM simply.tSalOrdr
+    WHERE lId = ${req.params.id};`;
+    db.query(sql, (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: 'success',
+        data: rows,
+      });
+    });
+});
+
+router.get('/byCustomer/:id', (req, res) => {
+    const sql = `SELECT lId, sSONum FROM simply.tSalOrdr
+    WHERE bCleared = 0 AND lCusId = ${req.params.id}
+    ORDER BY IF(sSONum RLIKE '[a-z / . -]', 1, 2) DESC, 
+    CASE WHEN sSONum RLIKE '[a-z / . -]' THEN sSONum END, 
+    CHAR_LENGTH(sSONum), sSONum ASC;`;
+    db.query(sql, (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: 'success',
+        data: rows,
+      });
+    });
+});
+
 router.post('/', (req, res) => {
     const queries = [];
     let sql = `
