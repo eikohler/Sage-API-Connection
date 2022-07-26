@@ -166,3 +166,8 @@ td{
 }
 /* Items table styling end*/
 
+/* Order Select styling starts */
+#orderSelect{
+    min-width: 190px;
+}
+/* Order Select styling ends */

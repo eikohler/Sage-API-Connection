@@ -71,7 +71,7 @@ router.post('/', (req, res) => {
     const queries = [];
     let sql = `
     INSERT INTO simply.tSalOrdr (lId, lCusId, sSONum, dtASDate, tmASTime, sASUserId, sASOrgId, sName, sSoldTo1, sSoldTo2, sSoldTo3, sSoldTo4, sSoldTo5, sShipTo1, sShipTo2, sShipTo3, sShipTo4, sShipTo5, sShipTo6, dtShipDate, dtSODate, bPrinted, bEmailed, sUser, fDiscPer, nDiscDay, nNetDay, dTotal, lJourId, sComment, sShipper, bQuote, bImport, lCurrncyId, dExchRate, bEtran, bPrePaid, lPaidJor, nPdType, sCrdName, lAcctNum, lDepId, lSoldBy, szSoldBy, sChqNum, bDSProc, bCleared, lChqId, lInvLocId, bRmBPLst, lAddrId, nLangPref, nFilled, bReversed, bReversal, lCCTransId, lRevCCTrId)
-    VALUES('${req.body.newID}', '${req.body.customer.lId}', '${req.body.orderNum}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'sysadmin', 'winsim', '${req.body.customer.sName}', '${req.body.customer.sStreet1}', '${req.body.customer.sStreet2}', '${req.body.customer.sCity}', '${req.body.customer.sProvState}', '${req.body.customer.sPostalZip}', '${req.body.shipTo[0]}', '${req.body.shipTo[1]}', '${req.body.shipTo[2]}', '${req.body.shipTo[3]}', '${req.body.shipTo[4]}', '${req.body.shipTo[5]}', '${req.body.shipDate}', '${req.body.orderDate}', '0', '0', 'sysadmin', '0', '0', '0', '${req.body.totalAmt}', '28805', '${req.body.message}', '', '0', '0', '1', '0', '0', '0', '0', '0', '', '0', '0', '${req.body.salesManID}', '${req.body.salesManName}', '', '0', '0', '0', '${req.body.locationID}', '0', '${req.body.customer.lId}', '0', '0', '0', '0', '0', '0');
+    VALUES('${req.body.newID}', '${req.body.customer.lId}', '${req.body.orderNum}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'sysadmin', 'winsim', '${req.body.customer.sName}', '${req.body.customer.sStreet1}', '${req.body.customer.sStreet2}', '${req.body.customer.sCity}', '${req.body.customer.sProvState}', '${req.body.customer.sPostalZip}', '${req.body.shipTo[0]}', '${req.body.shipTo[1]}', '${req.body.shipTo[2]}', '${req.body.shipTo[3]}', '${req.body.shipTo[4]}', '${req.body.shipTo[5]}', '${req.body.shipDate}', '${req.body.orderDate}', '0', '0', 'sysadmin', '0', '0', '0', '${req.body.totalAmt}', '28805', '${req.body.message}', '', '0', '0', '1', '0', '0', '0', '0', '0', '', '0', '0', '${req.body.salesManID}', '${req.body.salesManName}', '', '0', '0', '0', '${req.body.locationID}', '0', '${req.body.customer.shipID}', '0', '0', '0', '0', '0', '0');
     `;
     queries.push(sql);   
     req.body.items.forEach(item => {
@@ -133,5 +133,10 @@ router.post('/', (req, res) => {
 
     dbPromise(queries[index]);
 });
+
+// SELECT orders.lCusId, orders.sName, orders.sSoldTo1, orders.sSoldTo2, orders.sSoldTo3, orders.sSoldTo4, orders.sSoldTo5, orders.sShipTo1, orders.sShipTo2, orders.sShipTo3, orders.sShipTo4, orders.sShipTo5, orders.sShipTo6, orders.dtShipDate, orders.dTotal, orders.sComment, orders.lSoldBy, orders.szSoldBy, orders.lInvLocId, orders.lAddrId, items.nLineNum, items.lInventId, items.sPartCode, items.dQuantity, items.dOrdered, items.dRemaining, items.sUnits, items.sDesc, items.dPrice, items.lTaxCode, items.bFreight, items.dAmount, items.lAcctId 
+// FROM simply.tSalOrdr as orders
+// JOIN simply.tSOLine as items ON orders.lId=items.lSOId
+// WHERE lId = 34684;
 
 module.exports = router;

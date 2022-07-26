@@ -19,6 +19,16 @@ const getSaleOrders = async () => {
     return await response.json();
 }
 
+const getSaleOrdersByCustomer = async (id) => {
+    let response = await fetch(`/api/salesOrder/byCustomer/${id}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    return await response.json();
+}
+
 const loadSaleOrders = (orders) => {
     console.log(orders);
     orders.data.forEach(order => {
@@ -159,6 +169,16 @@ const submitOrder = async () => {
         alert("Error: Order Unable to be Processed");
     }
 }
+
+$('#subjects').change(function(){
+    $('#orderSelect').find('option').eq(0).text('');
+    $('#orderSelect').find('option').not(':first').remove();
+    getSaleOrdersByCustomer($(this).val()).then(loadSaleOrders).then(()=>{
+        if($('#orderSelect').find('option').length <= 1){
+            $('#orderSelect').find('option').eq(0).text('No Orders Available');
+        }
+    });
+});
 
 const initSaleOrders = () => getSaleOrders().then(loadSaleOrders);
 
