@@ -173,53 +173,7 @@ const selectCustomer = async (id) => {
 }
 
 
-const selectItem = async (row, id) => {
-    // console.log(id);
 
-    const item = await getItem(id);
-    console.log("Item");
-    console.log(item);
-
-    let acctNum = item.lAcNAsset.toString();
-    acctNum = acctNum.substring(0, acctNum.length - 4);
-    acctNum = parseInt(acctNum);
-
-    row.find('.itemSelect, .descSelect').val(item.lId);
-    row.find('.unitNum').val(item.sBuyUnit);
-    row.find('.quantityNum').val(item.dInStock);
-    row.find('.quantityNum').prop('title', `${item.dInStock}`);
-    row.find('.priceNum').val(item.dLastPPrce);
-
-    let amount = row.find('.orderNum').val() * row.find('.priceNum').val();
-    amount = Math.round(amount * 100)/100;
-    row.find('.amountNum').val(amount);
-
-    updateTax(row.find('.taxNum'));
-}
-
-const addRow = () => {
-    $('#itemsBody').append(`<tr class="itemsRow">
-        <td class="item"><select name="item" class="itemSelect" autocomplete="on">
-        <option value="" selected=""></option>
-        </select></td>
-        <td class="quantity"><input name="quantityNum" class="quantityNum readOnly" readonly title="Stock Quantity"></td>
-        <td class="order"><input name="orderNum" type="number" min="0" class="orderNum"></td>
-        <td class="bOrder"><input name="bOrderNum" type="number" min="0" class="bOrderNum"></td>
-        <td class="unit"><input name="unitNum" class="unitNum"></td>
-        <td class="description"><select name="desc" class="descSelect" autocomplete="on">
-        <option value="" selected=""></option>
-        </select></td>
-        <td class="price"><input name="priceNum" type="number" step="0.00000000000001" min="0" class="priceNum"></td>
-        <td class="tax"><select name="taxNum" class="taxNum" autocomplete="on"></select></td>
-        <td class="gst"><input name="gstNum" type="number" step="0.01" min="0" class="gstNum readOnly" readonly></td>
-        <td class="pst"><input name="pstNum" type="number" step="0.01" min="0" class="pstNum readOnly" readonly></td>
-        <td class="amount"><input name="amountNum" type="number" step="0.01" min="0" class="amountNum"></td>
-        <td class="account"><input name="accountNum" class="accountNum readOnly" readonly title="Account"></td>
-    </tr>`);
-    initItems($('.itemsRow').last());
-    initTax($('.itemsRow').last());
-    loadAccount($('.itemsRow').last());
-};
 
 $('#subjects').change(function(){
     selectCustomer($(this).val());

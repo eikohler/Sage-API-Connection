@@ -35,18 +35,26 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-    const sql = `SELECT * FROM simply.tSalOrdr
-    WHERE lId = ${req.params.id};`;
-    db.query(sql, (err, rows) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-        return;
-      }
-      res.json({
-        message: 'success',
-        data: rows,
-      });
+  const sql = `SELECT orders.lCusId, orders.sName, orders.sSoldTo1, orders.sSoldTo2, orders.sSoldTo3, 
+  orders.sSoldTo4, orders.sSoldTo5, orders.sShipTo1, orders.sShipTo2, orders.sShipTo3, orders.sShipTo4, 
+  orders.sShipTo5, orders.sShipTo6, orders.dtShipDate, orders.dTotal, orders.sComment, orders.lSoldBy, 
+  orders.szSoldBy, orders.lInvLocId, orders.lAddrId, items.nLineNum, items.lInventId, items.sPartCode, 
+  items.dQuantity, items.dOrdered, items.dRemaining, items.sUnits, items.sDesc, items.dPrice, items.lTaxCode, 
+  items.bFreight, items.dAmount, items.lAcctId, accnt.sName AS accountName 
+  FROM simply.tSalOrdr as orders
+  JOIN simply.tSOLine as items ON orders.lId=items.lSOId
+  JOIN simply.tAccount as accnt ON items.lAcctId=accnt.lId
+  WHERE orders.lId = ${req.params.id};`;
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: rows,
     });
+  });
 });
 
 router.get('/byCustomer/:id', (req, res) => {
@@ -133,10 +141,5 @@ router.post('/', (req, res) => {
 
     dbPromise(queries[index]);
 });
-
-// SELECT orders.lCusId, orders.sName, orders.sSoldTo1, orders.sSoldTo2, orders.sSoldTo3, orders.sSoldTo4, orders.sSoldTo5, orders.sShipTo1, orders.sShipTo2, orders.sShipTo3, orders.sShipTo4, orders.sShipTo5, orders.sShipTo6, orders.dtShipDate, orders.dTotal, orders.sComment, orders.lSoldBy, orders.szSoldBy, orders.lInvLocId, orders.lAddrId, items.nLineNum, items.lInventId, items.sPartCode, items.dQuantity, items.dOrdered, items.dRemaining, items.sUnits, items.sDesc, items.dPrice, items.lTaxCode, items.bFreight, items.dAmount, items.lAcctId 
-// FROM simply.tSalOrdr as orders
-// JOIN simply.tSOLine as items ON orders.lId=items.lSOId
-// WHERE lId = 34684;
 
 module.exports = router;

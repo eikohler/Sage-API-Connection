@@ -171,3 +171,9 @@ td{
     min-width: 190px;
 }
 /* Order Select styling ends */
+
+/* Message styling starts */
+#message{
+    min-height: 70px;
+}
+/* Message styling ends */

@@ -78,7 +78,7 @@
         <thead>
             <tr>
                 <th>Item Number</th>
-                <th>Stock Qty.</th>
+                <th>{{#if invoice}}Quantity{{else}}Stock Qty.{{/if}}</th>
                 <th>Order</th>
                 <th>Back Order</th>
                 <th>Unit</th>
@@ -96,9 +96,9 @@
                 <td class="item"><select name="item" class="itemSelect" autocomplete="on">
                     <option value="" selected=""></option>
                 </select></td>
-                <td class="quantity"><input name="quantityNum" class="quantityNum readOnly" readonly title="Stock Quantity"></td>
-                <td class="order"><input name="orderNum" type="number" min="0" class="orderNum"></td>
-                <td class="bOrder"><input name="bOrderNum" type="number" min="0" class="bOrderNum"></td>
+                <td class="quantity"><input name="quantityNum" class="quantityNum {{#unless invoice}}readOnly{{/unless}}" {{#unless invoice}}readonly{{/unless}} title="Stock Quantity"></td>
+                <td class="order"><input name="orderNum" type="number" min="0" class="orderNum {{#if invoice}}readOnly{{/if}}" {{#if invoice}}readonly{{/if}}></td>
+                <td class="bOrder"><input name="bOrderNum" type="number" min="0" class="bOrderNum {{#if invoice}}readOnly{{/if}}" {{#if invoice}}readonly{{/if}}></td>
                 <td class="unit"><input name="unitNum" class="unitNum"></td>
                 <td class="description"><select name="desc" class="descSelect" autocomplete="on">
                     <option value="" selected=""></option>

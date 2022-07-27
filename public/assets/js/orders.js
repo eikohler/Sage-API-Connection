@@ -115,64 +115,6 @@ const loadItems = (items, row) => {
     });
 }
 
-const updateTax = async (elem) =>{
-    let taxCode = elem.val();
-    let gst;
-    let pst;
-    let amount;
-
-    if(elem.hasClass('taxNum')){
-        let row = elem.parent().parent();
-        gst = row.find('.gstNum');
-        pst = row.find('.pstNum');
-        amount = row.find('.amountNum').val();
-    }else if(elem.hasClass('freight-tax')){
-        gst = $('#freightGST');
-        pst = $('#freightPST');
-        amount = $('#freight').val();
-    }
-
-    const selectedTax = await getTaxInfo(taxCode);
-
-    if(selectedTax.length === 1){
-        pst.prop('readonly', true);
-        pst.addClass('readOnly');
-        pst.val('');
-    }
-
-    selectedTax.forEach(taxType=>{
-        if(taxType.lTaxAuth === 1){
-            if(taxType.dPct > 0){
-                gst.prop('readonly', false);
-                gst.removeClass('readOnly');
-                gst.val(Math.round((amount*(taxType.dPct/100)) * 100)/100);
-            }else{
-                gst.prop('readonly', true);
-                gst.addClass('readOnly');
-                gst.val('');
-            }
-        }else if(taxType.lTaxAuth === 2){
-            if(taxType.dPct > 0){
-                pst.prop('readonly', false);
-                pst.removeClass('readOnly');
-                pst.val(Math.round((amount*(taxType.dPct/100)) * 100)/100);
-            }else{
-                pst.prop('readonly', true);
-                pst.addClass('readOnly');
-                pst.val('');
-            }
-        }else{
-            gst.prop('readonly', true);
-            gst.addClass('readOnly');
-            gst.val('');
-            pst.prop('readonly', true);
-            pst.addClass('readOnly');
-            pst.val('');
-        }
-    });
-    updateTotals();
-}
-
 
 const updateTotals = () => {
     let subtotalAmt = 0;
@@ -274,22 +216,6 @@ $('#locations').change(function(){
     });
 });
 
-$(document).on("focusout", '.priceNum', function(){
-    let row = $(this).parent().parent();
-    let amount = $(this).val() * row.find('.orderNum').val();
-    amount = Math.round(amount * 100)/100;
-    row.find('.amountNum').val(amount);
-    updateTax(row.find('.taxNum'));
-});
-
-$(document).on("focusout", '.orderNum', function(){
-    let row = $(this).parent().parent();
-    let amount = $(this).val() * row.find('.priceNum').val();
-    amount = Math.round(amount * 100)/100;
-    row.find('.amountNum').val(amount);
-    row.find('.bOrderNum').val($(this).val());
-    updateTax(row.find('.taxNum'));
-});
 
 $(document).on("focusout", '.bOrderNum', function(){
     let row = $(this).parent().parent();
@@ -304,17 +230,11 @@ $(document).on("change", '.taxNum', function(){
     updateTax($(this));
 });
 
-$(document).on("submit", '#orderForm', function(event){
-    event.preventDefault();    
-    if(isFormValid()){submitOrder();}
-    else{alert("All items must have an item number selected, \nan order amount and back order amount");}
-});
-
-const initItems = (row) => {
-    getItems().then((data) => loadItems(data, row));
+const initItems = async (row) => {
+    await getItems().then((data) => loadItems(data, row));
 }
-const initTax = (row) => {
-    getTax().then((data) => loadTax(data, row));
+const initTax = async (row) => {
+    await getTax().then((data) => loadTax(data, row));
 }
 const initLocations = () => getLocations().then(loadLocations);
 
