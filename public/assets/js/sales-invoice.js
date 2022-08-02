@@ -231,6 +231,9 @@ const submitOrder = async () => {
     let gstTotalNonRef = 0;
     let pstTotalRef = 0;
     let pstTotalNonRef = 0;
+
+    let quantityExists = false;
+
     $('.itemsRow').each(async function(){
         if($(this).find('.itemSelect').val()){
             // Get item by id
@@ -263,9 +266,14 @@ const submitOrder = async () => {
                 defaultPrice = 1;
             }
 
+            let quantity = $(this).find('.quantityNum').val();
+            if(!quantityExists && quantity > 0){
+                quantityExists = true;
+            }
+
             // Create user input object
             const userInput = {
-                quantity: $(this).find('.quantityNum').val(),
+                quantity: quantity,
                 orderQuantity: $(this).find('.orderNum').val(),
                 backOrderQuantity: $(this).find('.bOrderNum').val(),
                 taxCode: $(this).find('.taxNum').val(),
@@ -307,6 +315,12 @@ const submitOrder = async () => {
     let lastID = await getLastSInvoiceID();
     let newID = lastID + 1;
 
+    let newJEntID = 0;
+    if(quantityExists){
+        let lastJEntID = await getLastJEntID();
+        newJEntID = lastJEntID + 1;
+    }
+
     let bFromPO = 0;
     if($('#orderSelect').val()){
         bFromPO = 1;
@@ -314,6 +328,7 @@ const submitOrder = async () => {
 
     const data = { 
         newID: newID,
+        newJEntID: newJEntID,
         customer: customer, 
         shipTo: shipTo, 
         bFromPO: bFromPO,

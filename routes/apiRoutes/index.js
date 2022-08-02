@@ -10,6 +10,7 @@ const inventoryRoutes = require('./inventoryRoutes');
 const taxRoutes = require('./taxRoutes');
 const locRoutes = require('./locRoutes');
 const employeeRoutes = require('./employeeRoutes');
+const journalRoutes = require('./journalRoutes');
 
 router.use('/vendors', vendorRoutes);
 router.use('/customers', customerRoutes);
@@ -21,5 +22,6 @@ router.use('/inventory', inventoryRoutes);
 router.use('/tax', taxRoutes);
 router.use('/locations', locRoutes);
 router.use('/employees', employeeRoutes);
+router.use('/journals', journalRoutes);
 
 module.exports = router;

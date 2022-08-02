@@ -18,6 +18,17 @@ const setOrderFields = () =>{
     });
 }
 
+const getLastJEntID = async () => {
+    let response =  await fetch("/api/journals/lastID", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }      
+    });
+    let idDate = await response.json();
+    return idDate.data[0].lId;
+}
+
 const getUUID = async () => {
     let response =  await fetch("/api/orders/uuid", {
         method: "GET",
