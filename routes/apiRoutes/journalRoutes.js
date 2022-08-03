@@ -18,11 +18,38 @@ router.get('/lastID', (req, res) => {
 
 router.post('/', (req, res) => {
     const queries = [];
+    let totalGST = req.body.gstTotalRef + req.body.gstTotalNonRef;
+    let totalPST = req.body.pstTotalRef + req.body.pstTotalNonRef;
+
     let sql = `
     INSERT INTO simply.tJourEnt (lId, dtASDate, tmASTime, sASUserId, sASOrgId, dtJourDate, nModule, nType, sSource, sComment, lCurrncyId, dExchRate, lRecId, nPymtClass, sComment2, dtCmt2Date, bExported, lCompId, bAcctEntry, bAEImport, bAftYEnd, bB4YrStart)
     VALUES ('${req.body.newJEntID}', CURRENT_TIMESTAMP, '1899-12-30 16:03:18', 'sysadmin', 'winsim', '${req.body.orderDate}', '2', '1', '${req.body.orderNum}', '${req.body.customer.sName}', '1', '0', '${req.body.customer.lId}', '0', '', NULL, '0', '1', '0', '0', '0', '0');
     `;
     queries.push(sql);
+
+    // sql = `
+    // INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
+    // VALUES ('${req.body.newJEntID}', '1', '11100000', '${req.body.totalAmt}', '0', '', '0', '1', '0');
+    // `;
+    // queries.push(sql);
+
+    // sql = `
+    // INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
+    // VALUES ('${req.body.newJEntID}', '1', '42500000', '${req.body.freightAmt}', '0', '', '0', '1', '0');
+    // `;
+    // queries.push(sql);
+
+    // sql = `
+    // INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
+    // VALUES ('${req.body.newJEntID}', '1', '23000000', '${totalGST}', '0', '', '0', '1', '0');
+    // `;
+    // queries.push(sql);
+
+    // sql = `
+    // INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
+    // VALUES ('${req.body.newJEntID}', '1', '23100000', '${totalPST}', '0', '', '0', '1', '0');
+    // `;
+    // queries.push(sql);
 
     let index = 0;    
     const dbPromise = (query) => db.promise().query(query).then(()=>{
