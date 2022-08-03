@@ -349,7 +349,10 @@ const submitOrder = async () => {
     };
     console.log("Order Data");
     console.log(data);
+    postOrder(data);
+}
 
+const postOrder = async (data) => {
     const response = await fetch('/api/salesInvoice/', {
         method: 'POST',
         headers: {
@@ -422,8 +425,16 @@ const selectItem = async (row, id) => {
 }
 
 $(document).on("submit", '#orderForm', function(event){
-    event.preventDefault();    
-    submitOrder();
+    event.preventDefault();
+    if($('#total').val()){
+        submitOrder();
+    }else{
+        if (confirm("A journal entry will not be created from this invoice, do you want to proceed?")){
+            submitOrder();
+        }else{
+            return false;
+        }
+    }
 });
 
 $(document).on("focusout", '.priceNum', function(){
