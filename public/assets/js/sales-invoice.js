@@ -231,9 +231,6 @@ const submitOrder = async () => {
     let gstTotalNonRef = 0;
     let pstTotalRef = 0;
     let pstTotalNonRef = 0;
-
-    let quantityExists = false;
-
     $('.itemsRow').each(async function(){
         if($(this).find('.itemSelect').val()){
             // Get item by id
@@ -264,11 +261,6 @@ const submitOrder = async () => {
 
             if(item.dLastPPrce == userPrice){
                 defaultPrice = 1;
-            }
-
-            let quantity = $(this).find('.quantityNum').val();
-            if(!quantityExists && quantity > 0){
-                quantityExists = true;
             }
 
             // Create user input object
@@ -315,8 +307,10 @@ const submitOrder = async () => {
     let lastID = await getLastSInvoiceID();
     let newID = lastID + 1;
 
+    let totalAmt = $('#total').val();
+
     let newJEntID = 0;
-    if(quantityExists){
+    if(totalAmt){
         let lastJEntID = await getLastJEntID();
         newJEntID = lastJEntID + 1;
     }
@@ -346,7 +340,7 @@ const submitOrder = async () => {
         freightTaxAmt: freightTaxAmt,
         freightGST: freightGstNum,
         freightPST: freightPstNum,
-        totalAmt: $('#total').val(),
+        totalAmt: totalAmt,
         gstTotalRef: Math.round(gstTotalRef * 100)/100,
         gstTotalNonRef: Math.round(gstTotalNonRef * 100)/100,
         pstTotalRef: Math.round(pstTotalRef * 100)/100,
@@ -364,13 +358,30 @@ const submitOrder = async () => {
         body: JSON.stringify(data)
     });
     const responseData = await response.json();
+    console.log("Invoice Response");
     console.log(responseData);
     if(responseData.message === "success"){
-        alert(`Success: Order has been submitted.\nOrder number: ${$('#orderNum').val().replace(/\s+/g, '')}`);
+        alert(`Success: Invoice has been submitted.\nInvoice number: ${$('#orderNum').val().replace(/\s+/g, '')}`);
+        if(newJEntID != 0){
+            createJournalEntry(data);
+        }
         resetForm();
     }else{
-        alert("Error: Order Unable to be Processed");
+        alert("Error: Invoice Unable to be Processed");
     }
+}
+
+const createJournalEntry = async (data) => {
+    const response = await fetch('/api/journals/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    });
+    const responseData = await response.json();
+    console.log("Journal Response");
+    console.log(responseData);
 }
 
 const updateOrderOptions = (custID) => {
