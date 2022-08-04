@@ -229,8 +229,12 @@ const submitOrder = async () => {
     let lastID = await getLastSOrderID();
     let newID = lastID + 1;
 
+    let lastJEntID = await getLastJEntID();
+    let newJEntID = lastJEntID + 1;
+
     const data = { 
         newID: newID,
+        newJEntID: newJEntID,
         customer: customer, 
         shipTo: shipTo, 
         orderNum: $('#orderNum').val().replace(/\s+/g, ''), 

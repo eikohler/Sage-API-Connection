@@ -39,7 +39,7 @@ router.post('/', (req, res) => {
 
       sql = `
       INSERT INTO simply.tITRLine (lITRecId, nLineNum, sSource, lInventId, lAcctId, dQty, dPrice, dAmt, dCost, dRev, bTsfIn, bVarLine, bReversal, bService, lAcctDptId, lInvLocId, bDefPrc, lPrcListId, dBasePrice, dLineDisc, bDefBsPric, bDelInv, bUseVenItm, dOrgInvQty, dOrgInvAmt, nTransFrom)
-      VALUES ('${req.body.newID}', '${item.lineNum}', '${item.sPartCode}', '${item.lId}', '${item.lAcNAsset}', '${item.userInput.quantity}', '${item.userInput.price}', '${item.userInput.amount}', '0', '${item.userInput.amount}', '0', '0', '0', '0', '0', '${req.body.customer.locationID}', '0', '20', '${item.userInput.price}', '0', '0', '0', '0', '0', '0', '1');
+      VALUES ('${req.body.newID}', '${item.lineNum}', '${item.sPartCode}', '${item.lId}', '${req.body.customer.lAcDefRev}', '${item.userInput.quantity}', '${item.userInput.price}', '${item.userInput.amount}', '0', '${item.userInput.amount}', '0', '0', '0', '0', '0', '${req.body.customer.locationID}', '0', '20', '${item.userInput.price}', '0', '0', '0', '0', '0', '0', '1');
       `;
       queries.push(sql);
 
@@ -63,17 +63,21 @@ router.post('/', (req, res) => {
     VALUES ('${req.body.newID}', '${req.body.items.length + 1}', '', '', '0', '', '${req.body.freightAmt}', '0', '0', '0', '0', '0', '1', '${req.body.freightTaxCode}', '16', '${req.body.freightTaxAmt}', '0', '0', '0', '0', '0', '0', '0', '0');
     `;
     queries.push(sql);
+
+    let lineNum = req.body.items.length;
     if(req.body.freightGST){
+        lineNum = lineNum + 1;
         const gst = `
         INSERT INTO simply.tITLULiT (lITRecId, nLineNum, lTaxAuth, bExempt, dTaxAmt, lDeptId)
-        VALUES ('${req.body.newID}', '${req.body.items.length + 1}', '1', '0', '${req.body.freightGST}', '0');
+        VALUES ('${req.body.newID}', '${lineNum}', '1', '0', '${req.body.freightGST}', '0');
         `;
         queries.push(gst);
     }
     if(req.body.freightPST){
+        lineNum = lineNum + 1;
         const pst = `
         INSERT INTO simply.tITLULiT (lITRecId, nLineNum, lTaxAuth, bExempt, dTaxAmt, lDeptId)
-        VALUES ('${req.body.newID}', '${req.body.items.length + 1}', '1', '0', '${req.body.freightPST}', '0');
+        VALUES ('${req.body.newID}', '${lineNum}', '1', '0', '${req.body.freightPST}', '0');
         `;
         queries.push(pst);
     }
@@ -90,7 +94,10 @@ router.post('/', (req, res) => {
     let index = 0;
     const dbPromise = (query) => db.promise().query(query).then(()=>{
         index = index + 1;
-        if(index<queries.length){dbPromise(queries[index]);}
+        if(index<queries.length){
+          // console.log(queries[index]);
+          dbPromise(queries[index]);
+        }
         else{res.json({message: 'success'});}
     }).catch((err) => res.status(500).json({ error: err.message }));
 
