@@ -16,6 +16,22 @@ router.get('/lastID', (req, res) => {
     });
 });
 
+router.get('/total/:id', (req, res) => {
+  const sql = `SELECT lId, sSONum, dTotal FROM simply.tSalOrdr
+  WHERE lId = ${req.params.id};`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: rows,
+    });
+  });
+});
+
 router.get('/', (req, res) => {
     const sql = `SELECT lId, sSONum FROM simply.tSalOrdr
     WHERE bCleared = 0
@@ -73,6 +89,23 @@ router.get('/byCustomer/:id', (req, res) => {
         data: rows,
       });
     });
+});
+
+router.put('/clear', (req, res) => {
+  const sql = `UPDATE simply.tSalOrdr
+  SET bCleared = 1
+  WHERE lId = ${req.body.orderSelect};`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: rows,
+    });
+  });
 });
 
 router.post('/', (req, res) => {

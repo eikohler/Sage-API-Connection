@@ -368,6 +368,12 @@ const postOrder = async (data) => {
         if(newJEntID != 0){
             createJournalEntry(data);
         }
+        if(data.orderSelect){
+            let orderSelectTotal = getSaleOrderTotal(data.orderSelect);
+            if(orderSelectTotal <= data.totalAmt){
+                clearSaleOrder(data);
+            }
+        }
         resetForm();
     }else{
         alert("Error: Invoice Unable to be Processed");
@@ -387,6 +393,19 @@ const createJournalEntry = async (data) => {
     console.log(responseData);
 }
 
+const clearSaleOrder = async (data) => {
+    const response = await fetch('/api/salesOrder/clear', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    });
+    const responseData = await response.json();
+    console.log("Sales Order Clear Response");
+    console.log(responseData);
+}
+ 
 const updateOrderOptions = (custID) => {
     const currentOrder = $('#orderSelect').val();
     $('#orderSelect').find('option').eq(0).text('');    

@@ -67,6 +67,17 @@ const loadAccount = async (row) => {
     }
 }
 
+const getSaleOrderTotal = async (id) => {
+    let response = await fetch(`/api/salesOrder/total/${id}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    let responseData = await response.json();
+    return responseData.data[0]; 
+}
+ 
 const selectCustomer = async (id) => {
     const selectedCustomer = await getCustomer(id);    
     console.log("Customer");

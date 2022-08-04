@@ -20,6 +20,8 @@ router.post('/', (req, res) => {
     const queries = [];
     let totalGST = req.body.gstTotalRef + req.body.gstTotalNonRef;
     let totalPST = req.body.pstTotalRef + req.body.pstTotalNonRef;
+    let totalItemAmt = 0;
+    let lineNum = 1;
 
     let sql = `
     INSERT INTO simply.tJourEnt (lId, dtASDate, tmASTime, sASUserId, sASOrgId, dtJourDate, nModule, nType, sSource, sComment, lCurrncyId, dExchRate, lRecId, nPymtClass, sComment2, dtCmt2Date, bExported, lCompId, bAcctEntry, bAEImport, bAftYEnd, bB4YrStart)
@@ -27,37 +29,60 @@ router.post('/', (req, res) => {
     `;
     queries.push(sql);
 
-    // sql = `
-    // INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
-    // VALUES ('${req.body.newJEntID}', '1', '11100000', '${req.body.totalAmt}', '0', '', '0', '1', '0');
-    // `;
-    // queries.push(sql);
+    sql = `
+    INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
+    VALUES ('${req.body.newJEntID}', '${lineNum}', '11100000', '${req.body.totalAmt}', '0', '', '0', '1', '0');
+    `;
+    queries.push(sql);
 
-    // sql = `
-    // INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
-    // VALUES ('${req.body.newJEntID}', '1', '42500000', '${req.body.freightAmt}', '0', '', '0', '1', '0');
-    // `;
-    // queries.push(sql);
+    req.body.items.forEach(item => {
+      if(item.userInput.amount > 0){
+        totalItemAmt = totalItemAmt + item.userInput.amount;
+      }
+    });
 
-    // sql = `
-    // INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
-    // VALUES ('${req.body.newJEntID}', '1', '23000000', '${totalGST}', '0', '', '0', '1', '0');
-    // `;
-    // queries.push(sql);
+    if(totalItemAmt > 0){
+      lineNum = lineNum + 1;
+      const sql = `
+      INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
+      VALUES ('${req.body.newJEntID}', '${lineNum}', '${req.body.customer.lAcDefRev}', '${totalItemAmt}', '0', '', '0', '1', '0');
+      `;
+      queries.push(sql);
+    }
 
-    // sql = `
-    // INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
-    // VALUES ('${req.body.newJEntID}', '1', '23100000', '${totalPST}', '0', '', '0', '1', '0');
-    // `;
-    // queries.push(sql);
+    if(totalGST > 0){
+      lineNum = lineNum + 1;
+      sql = `
+      INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
+      VALUES ('${req.body.newJEntID}', '${lineNum}', '23000000', '${totalGST}', '0', '', '0', '1', '0');
+      `;
+      queries.push(sql);
+    }
 
-    let index = 0;    
+    if(totalPST > 0){
+      lineNum = lineNum + 1;
+      sql = `
+      INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
+      VALUES ('${req.body.newJEntID}', '${lineNum}', '23100000', '${totalPST}', '0', '', '0', '1', '0');
+      `;
+      queries.push(sql);
+    }
+
+    if(freightAmt > 0){
+      lineNum = lineNum + 1;
+      sql = `
+      INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
+      VALUES ('${req.body.newJEntID}', '${lineNum}', '42500000', '${req.body.freightAmt}', '0', '', '0', '1', '0');
+      `;
+      queries.push(sql);
+    }
+
+    let index = 0;
     const dbPromise = (query) => db.promise().query(query).then(()=>{
         index = index + 1;
         if(index<queries.length){dbPromise(queries[index]);}
         else{res.json({message: 'success'});}
     }).catch((err) => res.status(500).json({ error: err.message }));
-
     dbPromise(queries[index]);
 });
 
