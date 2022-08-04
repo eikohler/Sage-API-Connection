@@ -83,7 +83,7 @@ router.post('/', (req, res) => {
     `;
     const totalPst = `
     INSERT INTO simply.tITLUToT (lITRecId, lTaxAuth, dTaxAmt, dNonRef)
-    VALUES ('${req.body.newID}', '1', '${req.body.pstTotalRef}', '${req.body.pstTotalNonRef}');
+    VALUES ('${req.body.newID}', '2', '${req.body.pstTotalRef}', '${req.body.pstTotalNonRef}');
     `;
     queries.push(totalGst, totalPst);
 

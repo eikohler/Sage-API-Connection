@@ -265,7 +265,7 @@ const submitOrder = async () => {
 
             // Create user input object
             const userInput = {
-                quantity: quantity,
+                quantity: $(this).find('.quantityNum').val(),
                 orderQuantity: $(this).find('.orderNum').val(),
                 backOrderQuantity: $(this).find('.bOrderNum').val(),
                 taxCode: $(this).find('.taxNum').val(),
@@ -365,16 +365,25 @@ const postOrder = async (data) => {
     console.log(responseData);
     if(responseData.message === "success"){
         alert(`Success: Invoice has been submitted.\nInvoice number: ${$('#orderNum').val().replace(/\s+/g, '')}`);
-        if(newJEntID != 0){
-            createJournalEntry(data);
+        if(data.newJEntID != 0){
+            await createJournalEntry(data);
         }
         if(data.orderSelect){
-            let orderSelectTotal = getSaleOrderTotal(data.orderSelect);
-            if(orderSelectTotal <= data.totalAmt){
-                clearSaleOrder(data);
+            let orderCleared;
+            data.items.every(item => {
+                if(item.userInput.backOrderQuantity > 0){
+                    orderCleared  = false;
+                    return false;
+                }
+                orderCleared = true;
+                return true;
+            });
+            if(orderCleared){                
+                await clearSaleOrder(data);
             }
         }
         resetForm();
+        resetSaleOrderOptions();
     }else{
         alert("Error: Invoice Unable to be Processed");
     }
@@ -391,6 +400,9 @@ const createJournalEntry = async (data) => {
     const responseData = await response.json();
     console.log("Journal Response");
     console.log(responseData);
+    if(responseData.message === "success"){
+        alert("Journal entry has been created");
+    }
 }
 
 const clearSaleOrder = async (data) => {
@@ -404,6 +416,9 @@ const clearSaleOrder = async (data) => {
     const responseData = await response.json();
     console.log("Sales Order Clear Response");
     console.log(responseData);
+    if(responseData.message === "success"){
+        alert("Sale order has been cleared");
+    }
 }
  
 const updateOrderOptions = (custID) => {
@@ -419,6 +434,12 @@ const updateOrderOptions = (custID) => {
             $('#orderSelect').val('');
         }
     });
+}
+
+const resetSaleOrderOptions = () => {
+    $('#orderSelect').find('option').eq(0).text('');    
+    $('#orderSelect').find('option').not(':first').remove();
+    getSaleOrders().then(loadSaleOrders).then(()=>{$('#orderSelect').val('');});
 }
 
 const selectItem = async (row, id) => {
@@ -445,7 +466,7 @@ const selectItem = async (row, id) => {
 
 $(document).on("submit", '#orderForm', function(event){
     event.preventDefault();
-    if($('#total').val()){
+    if($('#total').val() > 0){
         submitOrder();
     }else{
         if (confirm("A journal entry will not be created from this invoice, do you want to proceed?")){

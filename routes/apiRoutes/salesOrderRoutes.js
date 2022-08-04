@@ -16,22 +16,6 @@ router.get('/lastID', (req, res) => {
     });
 });
 
-router.get('/total/:id', (req, res) => {
-  const sql = `SELECT lId, sSONum, dTotal FROM simply.tSalOrdr
-  WHERE lId = ${req.params.id};`;
-
-  db.query(sql, (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: 'success',
-      data: rows,
-    });
-  });
-});
-
 router.get('/', (req, res) => {
     const sql = `SELECT lId, sSONum FROM simply.tSalOrdr
     WHERE bCleared = 0

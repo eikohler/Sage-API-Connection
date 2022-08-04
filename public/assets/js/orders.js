@@ -181,6 +181,9 @@ const resetForm = () =>{
     $('.subjectInfo').html('');
     $('.totals-container').find('input').val('');
     $('.totals-container').find('select').prop('selectedIndex',0);
+    $('#message').val('');
+    $('#locations').removeClass('readOnly');
+    $('#locations').prop('disabled', false);
 }
 
 const isFormValid = () => {

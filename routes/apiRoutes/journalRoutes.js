@@ -68,7 +68,7 @@ router.post('/', (req, res) => {
       queries.push(sql);
     }
 
-    if(freightAmt > 0){
+    if(req.body.freightAmt > 0){
       lineNum = lineNum + 1;
       sql = `
       INSERT INTO simply.tJEntAct (lJEntId, nLineNum, lAcctId, dAmount, dAmountFor, szComment, lAcctDptId, lCompId, lTarifCd)
